@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# create update package
+
+
+if [ ! -d tar-install ] ; then 
+	echo "tar-install dir not found, first do "make tar-pkg" target. run build.sh first" 
+	exit 1
+fi
+
+if [ -d upgrade ] ; then rm -rf upgrade ; fi 
+if [ -f upgrade-*.tar.xz ] ; then rm -rf upgrade-*.tar.xz ; fi 
+mkdir tmp upgrade
+cp -a tar-install/lib tmp/
+fakeroot chown -R root.root tmp/
+fakeroot /usr/bin/mksquashfs tmp/  upgrade/kmod.squash -comp xz
+rm -rf tmp
+gitrev=`/usr/bin/git rev-parse --short HEAD`
+dtbfile=`grep CONFIG_UPGRADE_DTBFILE .config | awk -F '"' '{print $2}'`
+if [ -z "$dtbfile" ]; then 
+    echo "upgrade dtb file is not set in .config, aborting"
+    rm -rf upgrade
+    exit 1;
+fi
+if [ -f arch/arm64/boot/Image ] ; then 
+	cp -a arch/arm64/boot/Image upgrade/
+else
+	echo "zImage not foud, build kernel first, aborting"
+	rm -rf upgrade
+    exit 1;
+fi 
+
+if [ -f arch/arm64/boot/dts/rockchip/$dtbfile ] ; then 
+	cp -a arch/arm64/boot/dts/rockchip/$dtbfile upgrade/
+else
+	echo "device tree file not built, aborting"
+	rm -rf upgrade
+    exit 1;
+fi 
+
+fakeroot chown -R root.root upgrade/
+fakeroot md5sum upgrade/* > upgrade/MD5SUM
+echo dev: $USERNAME@$HOSTNAME >  upgrade/manifest
+echo type: kernel  >>  upgrade/manifest
+echo built: `date` >> upgrade/manifest
+echo git-rev: $gitrev  >> upgrade/manifest
+tar -cJf upgrade-$gitrev.tar.xz upgrade
+
+echo "update package created "
+exit 0

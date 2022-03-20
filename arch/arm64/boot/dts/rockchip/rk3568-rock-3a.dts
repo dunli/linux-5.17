@@ -9,6 +9,7 @@
 / {
 	model = "Radxa ROCK3 Model A";
 	compatible = "radxa,rock3a", "rockchip,rk3568";
+	dtbfile = "rk3568-rock-3a.dtb";
 
 	aliases {
 		ethernet0 = &gmac1;
