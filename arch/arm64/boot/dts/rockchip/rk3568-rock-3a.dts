@@ -506,3 +506,15 @@
 	phy-supply = <&vcc5v0_usb_host>;
 	status = "okay";
 };
+
+&pcie2x1 {
+	status = "okay";
+};
+
+&combphy1 {
+	status = "okay";
+};
+
+&combphy2 {
+	status = "okay";
+};
