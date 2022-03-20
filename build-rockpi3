@@ -1,0 +1,8 @@
+#!/bin/bash
+rm -rf *.tar
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- distclean
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- rock3_defconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j16 tar-pkg
+
+exit 0 
+
