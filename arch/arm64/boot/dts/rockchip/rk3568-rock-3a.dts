@@ -511,6 +511,10 @@
 	status = "okay";
 };
 
+&combphy0 {
+	status = "okay";
+};
+
 &combphy1 {
 	status = "okay";
 };
