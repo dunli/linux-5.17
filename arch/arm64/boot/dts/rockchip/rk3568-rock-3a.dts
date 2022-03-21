@@ -522,3 +522,13 @@
 &combphy2 {
 	status = "okay";
 };
+
+&usb_host0_xhci{
+	status = "okay";
+};
+
+&usb_host1_xhci{
+	status = "okay";
+};
+
+
